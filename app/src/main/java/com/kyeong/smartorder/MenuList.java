@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 public class MenuList extends ListFragment {
 
-
+    //테스트용
     int[] images = {R.drawable.coffee_hot_ameri, R.drawable.coffee_ice_ameri, R.drawable.coffee_hot_latte, R.drawable.coffee_ice_latte
             , R.drawable.coffee_hot_orizin, R.drawable.coffee_ice_orizin , R.drawable.coffee_clodbrew , R.drawable.coffee_clodbrew_latte
         , R.drawable.coffee_hot_condensed , R.drawable.coffee_ice_condensed };

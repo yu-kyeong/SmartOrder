@@ -1,25 +1,6 @@
 package com.kyeong.smartorder;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.ListFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,24 +8,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import kr.co.bootpay.Bootpay;
+import kr.co.bootpay.BootpayAnalytics;
+import kr.co.bootpay.enums.Method;
+import kr.co.bootpay.enums.PG;
+import kr.co.bootpay.enums.UX;
+import kr.co.bootpay.listener.CancelListener;
+import kr.co.bootpay.listener.CloseListener;
+import kr.co.bootpay.listener.DoneListener;
+import kr.co.bootpay.listener.ReadyListener;
+import kr.co.bootpay.model.BootExtra;
+import kr.co.bootpay.model.BootUser;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -66,6 +59,8 @@ public class MainActivity extends AppCompatActivity  {
     LinearLayout hiddenPage , hiddenPage2 , downButton;
     TabLayout tab1;
     ListView containerList;
+    //주문버튼 변수
+    Button orderBtn;
 
     FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
     public static Context context_main;
@@ -90,6 +85,12 @@ public class MainActivity extends AppCompatActivity  {
         allCount2 = (TextView)findViewById(R.id.all_count_2);
         allSum = (TextView)findViewById(R.id.all_sum);
         allSum2 = (TextView)findViewById(R.id.all_sum_2);
+
+        //주문
+        orderBtn = (Button)findViewById(R.id.order_button);
+
+        OrderBtnListener orderBtnListener = new OrderBtnListener();
+        orderBtn.setOnClickListener(orderBtnListener);
 
         tab1.addTab(tab1.newTab().setText(""));
         tab1.addTab(tab1.newTab().setText(""));
@@ -131,7 +132,6 @@ public class MainActivity extends AppCompatActivity  {
     public void containListAdapter(){
         class ContainListAdapter extends BaseAdapter{
 
-            Intent intent = getIntent();
             BtnListener listener = new BtnListener();
             @Override
             public int getCount() {
@@ -203,6 +203,25 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
         ContainListAdapter listAdapter = new ContainListAdapter();
+
+        //뒷배경 흐리게 하기
+        /*WindowManager.LayoutParams layoutParams= new WindowManager.LayoutParams();
+        layoutParams.flags= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        layoutParams.dimAmount= 0.7f;getWindow().setAttributes(layoutParams);*/
+
+        // (장바구니 안 리스트) 리스트뷰의 높이를 계산에서 layout 크기를 설정
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++){
+            View listItem = listAdapter.getView(i, null, containerList);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = containerList.getLayoutParams();
+        params.height = totalHeight + (containerList.getDividerHeight() * (listAdapter.getCount() - 1));
+        containerList.setLayoutParams(params);
+
+        //adapter 연결
         containerList.setAdapter(listAdapter);
     }
     class BtnListener implements View.OnClickListener{
@@ -220,8 +239,6 @@ public class MainActivity extends AppCompatActivity  {
     }
     ////////////////////
 
-
-
     public void setupViewPager(ViewPager viewPager) {
         adapter.addFragment(new MenuList(), "COFFEE");
         adapter.addFragment(new MenuList2(), "NONCOFFEE");
@@ -229,6 +246,73 @@ public class MainActivity extends AppCompatActivity  {
         adapter.addFragment(new MenuList4(), "DESSERT");
         viewPager.setAdapter(adapter);
     }
+
+    class OrderBtnListener implements View.OnClickListener{
+        int stuck = 10;
+        @Override
+        public void onClick(View view) {
+            MainActivity activity = ((MainActivity) MainActivity.context_main);
+
+            // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
+            // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
+            BootpayAnalytics.init(activity, "6005361b5b2948002b0b0405");
+
+            BootUser bootUser = new BootUser().setPhone("010-1234-5678"); // !! 자신의 핸드폰 번호로 바꾸기
+            BootExtra bootExtra = new BootExtra().setQuotas(new int[] {0, 2, 3});
+
+            Bootpay.init(getFragmentManager())
+                    .setApplicationId("6005361b5b2948002b0b0405") // 해당 프로젝트(안드로이드)의 application id 값(위의 값 복붙)
+                    .setPG(PG.INICIS) // 결제할 PG 사
+                    .setMethod(Method.CARD) // 결제수단
+                    .setContext(MainActivity.this)
+                    .setBootUser(bootUser)
+                    .setBootExtra(bootExtra)
+                    .setUX(UX.PG_DIALOG)
+//                .setUserPhone("010-1234-5678") // 구매자 전화번호
+                    .setName("맥북프로's 임다") // 결제할 상품명
+                    .setOrderId("1234") // 결제 고유번호 (expire_month)
+                    .setPrice(10000) // 결제할 금액
+                    .addItem("마우's 스", 1, "ITEM_CODE_MOUSE", 100) // 주문정보에 담길 상품정보, 통계를 위해 사용
+                    .addItem("키보드", 1, "ITEM_CODE_KEYBOARD", 200, "패션", "여성상의", "블라우스") // 주문정보에 담길 상품정보, 통계를 위해 사용
+                    /*.onConfirm(new ConfirmListener() { // 결제가 진행되기 바로 직전 호출되는 함수로, 주로 재고처리 등의 로직이 수행
+                        @Override
+                        public void onConfirm(@Nullable String message) {
+
+                            if (0 < stuck) Bootpay.confirm(message); // 재고가 있을 경우.
+                            else Bootpay.removePaymentWindow(); // 재고가 없어 중간에 결제창을 닫고 싶을 경우
+                            Log.d("confirm", message);
+                        }
+                    })*/
+                    .onDone(new DoneListener() { // 결제완료시 호출, 아이템 지급 등 데이터 동기화 로직을 수행합니다
+                        @Override
+                        public void onDone(@Nullable String message) {
+                            Log.d("done", message);
+                        }
+                    })
+                    .onReady(new ReadyListener() { // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+                        @Override
+                        public void onReady(@Nullable String message) {
+                            Log.d("ready", message);
+                        }
+                    })
+                    .onCancel(new CancelListener() { // 결제 취소시 호출
+                        @Override
+                        public void onCancel(@Nullable String message) {
+
+                            Log.d("cancel", message);
+                        }
+                    })
+                    .onClose(
+                            new CloseListener() { //결제창이 닫힐때 실행되는 부분
+                                @Override
+                                public void onClose(String message) {
+                                    Log.d("close", "close");
+                                }
+                            })
+                    .show();
+        }
+    }
+
 
     class SelectListener implements TabLayout.OnTabSelectedListener {
         @Override

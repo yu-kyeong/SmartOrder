@@ -3,21 +3,15 @@ package com.kyeong.smartorder;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
@@ -71,10 +65,6 @@ public class DeleteOption extends DialogFragment {
         @Override
         public void onClick(View view) {
             MainActivity activity = (MainActivity) getActivity();
-
-//                activity.value_n.remove(tag);
-//                activity.value_p.remove(tag);
-//                activity.value_i.remove(tag);
 
             /*총 갯수, 금액 합*/
             int sumInt = Integer.parseInt(activity.allSum.getText().toString().replace(",", ""));

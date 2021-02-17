@@ -70,6 +70,11 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
+        // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
+        BootpayAnalytics.init(this, "6005361b5b2948002b0b0403");
+
         context_main = this;
         //viewList
         pager1 = (ViewPager) findViewById(R.id.pager);
@@ -132,7 +137,7 @@ public class MainActivity extends AppCompatActivity  {
     public void containListAdapter(){
         class ContainListAdapter extends BaseAdapter{
 
-            BtnListener listener = new BtnListener();
+            DeleteBtnListener listener = new DeleteBtnListener();
             @Override
             public int getCount() {
                 return list_view.size();
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity  {
         //adapter 연결
         containerList.setAdapter(listAdapter);
     }
-    class BtnListener implements View.OnClickListener{
+    class DeleteBtnListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
             // 리스트의 인덱스 값을 추출한다.
@@ -253,15 +258,13 @@ public class MainActivity extends AppCompatActivity  {
         public void onClick(View view) {
             MainActivity activity = ((MainActivity) MainActivity.context_main);
 
-            // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
-            // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
-            BootpayAnalytics.init(activity, "6005361b5b2948002b0b0405");
+
 
             BootUser bootUser = new BootUser().setPhone("010-1234-5678"); // !! 자신의 핸드폰 번호로 바꾸기
             BootExtra bootExtra = new BootExtra().setQuotas(new int[] {0, 2, 3});
 
             Bootpay.init(getFragmentManager())
-                    .setApplicationId("6005361b5b2948002b0b0405") // 해당 프로젝트(안드로이드)의 application id 값(위의 값 복붙)
+                    .setApplicationId("6005361b5b2948002b0b0403") // 해당 프로젝트(안드로이드)의 application id 값(위의 값 복붙)
                     .setPG(PG.INICIS) // 결제할 PG 사
                     .setMethod(Method.CARD) // 결제수단
                     .setContext(MainActivity.this)
@@ -406,7 +409,7 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         public void onClick(View view) {
             if(isPageOpen){
-                Log.d("Main","true?");
+                Log.d("Main","true");
                 containListAdapter();
 
                 hiddenPage2.setVisibility(View.VISIBLE);
@@ -414,7 +417,7 @@ public class MainActivity extends AppCompatActivity  {
                 hiddenPage.setVisibility(View.INVISIBLE);
 
             }else{
-                Log.d("Main","false?");
+                Log.d("Main","false");
                 hiddenPage.startAnimation(tranBottomAnim);
             }
 
@@ -425,7 +428,7 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         public void onClick(View view) {
             if(isPageOpen){
-                Log.d("Main_Down","true?");
+                Log.d("Main_Down","true");
                 list_view.clear();
                 adapter.notifyDataSetChanged();
                 hiddenPage2.startAnimation(tranTopAnim);
@@ -434,7 +437,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
             }else{
-                Log.d("Main_Down","false?");
+                Log.d("Main_Down","false");
                 hiddenPage2.startAnimation(tranBottomAnim);
                 hiddenPage2.setVisibility(View.INVISIBLE);
                 hiddenPage.setVisibility(View.VISIBLE);

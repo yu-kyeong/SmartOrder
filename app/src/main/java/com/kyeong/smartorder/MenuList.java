@@ -1,34 +1,25 @@
 package com.kyeong.smartorder;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.ListFragment;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ListAdapter;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.ListFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MenuList extends ListFragment {
 
-    //테스트용
     int[] images = {R.drawable.coffee_hot_ameri, R.drawable.coffee_ice_ameri, R.drawable.coffee_hot_latte, R.drawable.coffee_ice_latte
             , R.drawable.coffee_hot_orizin, R.drawable.coffee_ice_orizin , R.drawable.coffee_clodbrew , R.drawable.coffee_clodbrew_latte
         , R.drawable.coffee_hot_condensed , R.drawable.coffee_ice_condensed };
@@ -39,9 +30,6 @@ public class MenuList extends ListFragment {
     TextView name , price ;
     ImageView image ;
 
-    public static MenuList newInstance() {
-        return new MenuList();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

@@ -133,7 +133,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="match_parent"
             android:visibility="invisible"
             android:id="@+id/hidden_page_2"
             android:layout_marginTop="10dp"
@@ -292,6 +292,48 @@
 
 
                         </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:layout_margin="5dp"
+                            android:text="결제 방법"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+
+                            <Button
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="신용/체크카드"
+                                android:textColor="#023ca0"
+                                android:background="@drawable/button_style"/>
+
+                            <Button
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="휴대폰결제"
+                                android:textColor="#023ca0"
+                                android:background="@drawable/button_style"/>
+
+                            <Button
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="PAYCO"
+                                android:textColor="#023ca0"
+                                android:background="@drawable/button_style"/>
+
+
+                        </LinearLayout>
+
+
 
                     </LinearLayout>
 

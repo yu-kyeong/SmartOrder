@@ -1,9 +1,5 @@
 package com.kyeong.smartorder;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DecimalFormat;
 
@@ -32,6 +30,7 @@ public class DialogActivity extends AppCompatActivity {
     TextView name, price, count, option;
     ImageView image, exit;
     LinearLayout optionMenu , optionLayout;
+
     //음료종류
     String s;
 
@@ -217,13 +216,6 @@ public class DialogActivity extends AppCompatActivity {
             intent.putExtra("opValue" , s);
             startActivity(intent);
 
-
-//            FragmentManager manager = getSupportFragmentManager();
-//            option2.s = s;
-//            String p = price.getText().toString();
-//            option2.price = p;
-//
-//            option2.show(manager , null);
         }
     }
 

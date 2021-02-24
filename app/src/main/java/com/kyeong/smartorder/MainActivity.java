@@ -40,7 +40,7 @@ import kr.co.bootpay.model.BootExtra;
 import kr.co.bootpay.model.BootUser;
 
 public class MainActivity extends AppCompatActivity  {
-
+ 
     //장바구니 List , Adapter
     ArrayList<ContainData> list_view = new ArrayList<ContainData>();
     ArrayList<ContainOptionData> containList = new ArrayList<ContainOptionData>();
@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity  {
     //장바구니 총 합 변수
     TextView allCount , allSum , allCount2 , allSum2;
     //장바구니 상품 기존 정보
-    String oriName , oriPrice , oriCount;
+    TextView name;
+    TextView price;
     //숨겨진 페이지가 열렸는지 확인하는 변수
     boolean isPageOpen = false;
     //애니메이션 변수
@@ -71,6 +72,11 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context_main = this;
+
+        // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
+        // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
+        BootpayAnalytics.init(this, "x");
+
         //viewList
         pager1 = (ViewPager) findViewById(R.id.pager);
         tab1 = (TabLayout) findViewById(R.id.tabLayout);
@@ -158,9 +164,9 @@ public class MainActivity extends AppCompatActivity  {
                     view = inflater.inflate(R.layout.container_list, null);
                 }
                 //상품 id
-                TextView name = (TextView)view.findViewById(R.id.contain_name);
+                name = (TextView)view.findViewById(R.id.contain_name);
                 ImageView image = (ImageView)view.findViewById(R.id.contain_image);
-                TextView price = (TextView)view.findViewById(R.id.contain_price);
+                price = (TextView)view.findViewById(R.id.contain_price);
                 Button delete = (Button)view.findViewById(R.id.deleteObj);
                 //상품 원가격 id
                 TextView oName = (TextView)view.findViewById(R.id.oriName);
@@ -176,6 +182,8 @@ public class MainActivity extends AppCompatActivity  {
                 name.setText(list_view.get(i).getValue_n());
                 image.setImageResource(list_view.get(i).getValue_i());
                 price.setText(list_view.get(i).getValue_p());
+                Log.d("price1",price.toString().replace(",",""));
+                Log.d("price2",price.getText().toString().replace(",",""));
                 delete.setTag(i);
                 //장바구니 상품의 기존 정보
                 oName.setText("└\t"+list_view.get(i).getOriName());
@@ -251,17 +259,14 @@ public class MainActivity extends AppCompatActivity  {
         int stuck = 10;
         @Override
         public void onClick(View view) {
-            MainActivity activity = ((MainActivity) MainActivity.context_main);
 
-            // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
-            // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
-            BootpayAnalytics.init(activity, "6005361b5b2948002b0b0405");
+            int count = Integer.parseInt(allCount2.getText().toString())-1;
 
             BootUser bootUser = new BootUser().setPhone("010-1234-5678"); // !! 자신의 핸드폰 번호로 바꾸기
             BootExtra bootExtra = new BootExtra().setQuotas(new int[] {0, 2, 3});
 
             Bootpay.init(getFragmentManager())
-                    .setApplicationId("6005361b5b2948002b0b0405") // 해당 프로젝트(안드로이드)의 application id 값(위의 값 복붙)
+                    .setApplicationId("x") // 해당 프로젝트(안드로이드)의 application id 값(위의 값 복붙)
                     .setPG(PG.INICIS) // 결제할 PG 사
                     .setMethod(Method.CARD) // 결제수단
                     .setContext(MainActivity.this)
@@ -269,11 +274,11 @@ public class MainActivity extends AppCompatActivity  {
                     .setBootExtra(bootExtra)
                     .setUX(UX.PG_DIALOG)
 //                .setUserPhone("010-1234-5678") // 구매자 전화번호
-                    .setName("맥북프로's 임다") // 결제할 상품명
+                    .setName(name.getText().toString()+" 외 "+count+"개") // 결제할 상품명
                     .setOrderId("1234") // 결제 고유번호 (expire_month)
-                    .setPrice(10000) // 결제할 금액
-                    .addItem("마우's 스", 1, "ITEM_CODE_MOUSE", 100) // 주문정보에 담길 상품정보, 통계를 위해 사용
-                    .addItem("키보드", 1, "ITEM_CODE_KEYBOARD", 200, "패션", "여성상의", "블라우스") // 주문정보에 담길 상품정보, 통계를 위해 사용
+                    .setPrice(Integer.parseInt(allSum2.getText().toString().replace(",","").replace("원",""))) // 결제할 금액
+//                    .addItem("마우's 스", 1, "ITEM_CODE_MOUSE", 100) // 주문정보에 담길 상품정보, 통계를 위해 사용
+//                    .addItem("키보드", 1, "ITEM_CODE_KEYBOARD", 200, "패션", "여성상의", "블라우스") // 주문정보에 담길 상품정보, 통계를 위해 사용
                     /*.onConfirm(new ConfirmListener() { // 결제가 진행되기 바로 직전 호출되는 함수로, 주로 재고처리 등의 로직이 수행
                         @Override
                         public void onConfirm(@Nullable String message) {

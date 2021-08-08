@@ -1,6 +1,7 @@
 package com.kyeong.smartorder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.bootpay.Bootpay;
-import kr.co.bootpay.BootpayAnalytics;
 import kr.co.bootpay.enums.Method;
 import kr.co.bootpay.enums.PG;
 import kr.co.bootpay.enums.UX;
@@ -40,7 +41,7 @@ import kr.co.bootpay.model.BootExtra;
 import kr.co.bootpay.model.BootUser;
 
 public class MainActivity extends AppCompatActivity  {
- 
+
     //장바구니 List , Adapter
     ArrayList<ContainData> list_view = new ArrayList<ContainData>();
     ArrayList<ContainOptionData> containList = new ArrayList<ContainOptionData>();
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity  {
 
         // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
         // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
-        BootpayAnalytics.init(this, "x");
 
         //viewList
         pager1 = (ViewPager) findViewById(R.id.pager);
@@ -178,6 +178,14 @@ public class MainActivity extends AppCompatActivity  {
                 TextView containOpCount = (TextView)view.findViewById(R.id.containOpCount);
                 TextView won = (TextView)view.findViewById(R.id.won);
 
+                //장바구니 컵 선택
+                final Button multiUse = (Button)findViewById(R.id.multi_use);
+                final Button disposable = (Button)findViewById(R.id.disposable);
+                //장바구니 결제방식 선택
+                final Button creditCard = (Button)findViewById(R.id.credit_card);
+                final Button phonePayment = (Button)findViewById(R.id.phone_payment);
+                final Button kakaoPay = (Button)findViewById(R.id.kakao_pay);
+
                 //장바구니에 들어간 정보
                 name.setText(list_view.get(i).getValue_n());
                 image.setImageResource(list_view.get(i).getValue_i());
@@ -190,6 +198,63 @@ public class MainActivity extends AppCompatActivity  {
                 oPrice.setText(list_view.get(i).getOriPrice());
                 oCount.setText(list_view.get(i).getOriCount());
 
+                multiUse.setOnClickListener(new Button.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        multiUse.setBackground(ContextCompat.getDrawable(getApplicationContext() ,R.drawable.button_change_style));
+                        disposable.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        multiUse.setTextColor(getResources().getColorStateList(R.color.changeButton));
+                        disposable.setTextColor(getResources().getColor(R.color.basicButton));
+                    }
+                });
+
+                disposable.setOnClickListener(new Button.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        disposable.setBackground(ContextCompat.getDrawable(getApplicationContext() ,R.drawable.button_change_style));
+                        multiUse.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+
+                        disposable.setTextColor(getResources().getColorStateList(R.color.changeButton));
+                        multiUse.setTextColor(getResources().getColor(R.color.basicButton));
+
+                    }
+                });
+
+                creditCard.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        creditCard.setBackground(ContextCompat.getDrawable(getApplicationContext() ,R.drawable.button_change_style));
+                        phonePayment.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        kakaoPay.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        creditCard.setTextColor(getResources().getColorStateList(R.color.changeButton));
+                        phonePayment.setTextColor(getResources().getColor(R.color.basicButton));
+                        kakaoPay.setTextColor(getResources().getColor(R.color.basicButton));
+                    }
+                });
+
+                phonePayment.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        phonePayment.setBackground(ContextCompat.getDrawable(getApplicationContext() ,R.drawable.button_change_style));
+                        creditCard.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        kakaoPay.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        phonePayment.setTextColor(getResources().getColorStateList(R.color.changeButton));
+                        creditCard.setTextColor(getResources().getColor(R.color.basicButton));
+                        kakaoPay.setTextColor(getResources().getColor(R.color.basicButton));
+                    }
+                });
+
+                kakaoPay.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        kakaoPay.setBackground(ContextCompat.getDrawable(getApplicationContext() ,R.drawable.button_change_style));
+                        phonePayment.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        creditCard.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_style));
+                        kakaoPay.setTextColor(getResources().getColorStateList(R.color.changeButton));
+                        phonePayment.setTextColor(getResources().getColor(R.color.basicButton));
+                        creditCard.setTextColor(getResources().getColor(R.color.basicButton));
+                    }
+                });
 
                 //옵션 추가했을시 set
                 if (containList.get(i).getOpCount() != null ) {
@@ -232,6 +297,7 @@ public class MainActivity extends AppCompatActivity  {
         //adapter 연결
         containerList.setAdapter(listAdapter);
     }
+
     class BtnListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -292,6 +358,9 @@ public class MainActivity extends AppCompatActivity  {
                         @Override
                         public void onDone(@Nullable String message) {
                             Log.d("done", message);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+
                         }
                     })
                     .onReady(new ReadyListener() { // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.

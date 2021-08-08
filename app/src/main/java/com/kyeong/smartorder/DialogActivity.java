@@ -110,7 +110,7 @@ public class DialogActivity extends AppCompatActivity {
             /*장바구니 List에 담기*/
             state = true;
             int countNum = Integer.parseInt((String) count.getText());
-            Log.d("Option", "countNum : " + countNum);
+            Log.d("DialogActivity", "countNum : " + countNum);
             if (countNum > 1 && countNum != 1) {
                 for (int i = 0; i < countNum; i++) {
                     data = new ContainData(value1, value2, value3 , oriName , oriPrice , oriCount);
@@ -124,7 +124,7 @@ public class DialogActivity extends AppCompatActivity {
                 activity.list_view.add(data);
                 activity.containList.add(optionData);
             }
-            Log.d("OPTION", "list :: " + activity.list_view);
+            Log.d("DialogActivity", "list :: " + activity.list_view);
 
             /*총 갯수, 금액 합*/
             int sumInt = 0;
@@ -151,8 +151,8 @@ public class DialogActivity extends AppCompatActivity {
                 activity.hiddenPage.setVisibility(View.INVISIBLE);
             }
 
-            Log.d("OPTION", "view . " + activity.hiddenPage.getVisibility());
-            Log.d("OPTION", "isPageOpen : " + activity.isPageOpen);
+            Log.d("DialogActivity", "view . " + activity.hiddenPage.getVisibility());
+            Log.d("DialogActivity", "isPageOpen : " + activity.isPageOpen);
 
             /*장바구니에 추가 후 다이얼로그 종료*/
             finish();
@@ -171,15 +171,15 @@ public class DialogActivity extends AppCompatActivity {
         public void onClick(View view) {
 
             String str = count.getText().toString().trim();
-            Log.d("얍", "현재 srt : " + str);
+            Log.d("DialogActivity", "현재 srt : " + str);
             int num = Integer.parseInt(str);
-            Log.d("얍", "Minus num : " + num);
+            Log.d("DialogActivity", "Minus num : " + num);
             if (num == 0) {
                 num = 0;
             } else {
                 num--;
                 count.setText(num + "");
-                Log.d("얍", "Minus 누른 후 : " + count.getText());
+                Log.d("DialogActivity", "Minus 누른 후 : " + count.getText());
             }
             //count.setText(num+"");
         }
@@ -190,9 +190,9 @@ public class DialogActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             String str = count.getText().toString().trim();
-            Log.d("얍", "현재 srt : " + str);
+            Log.d("DialogActivity", "현재 srt : " + str);
             int num = Integer.parseInt(str);
-            Log.d("얍", "Plus num : " + num);
+            Log.d("DialogActivity", "Plus num : " + num);
             //Log.d("얍","num : "+num);
 
             if (num == 20) {
@@ -200,7 +200,7 @@ public class DialogActivity extends AppCompatActivity {
             } else {
                 num++;
                 count.setText(num + "");
-                Log.d("얍", "plus 누른 후 : " + count.getText());
+                Log.d("DialogActivity", "plus 누른 후 : " + count.getText());
             }
         }
     }
